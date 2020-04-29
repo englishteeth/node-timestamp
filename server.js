@@ -22,21 +22,17 @@ app.get("/", function (req, res) {
 // API endpoint... 
 app.get("/api/timestamp/:date_string?", (req, res) => {
   const { date_string: ds} = req.params;
-  if (ds != undefined) {
-    let timestamp = Date.parse(ds);
-    if (isNaN(timestamp)) {
-      res.json({"error" : "Invalid Date" });
-    } else {
-      res.json(timeObj(new Date(timestamp)));
-    }
+  let date = (ds != undefined) ? (/^\d*$/.test(ds))? new Date(parseInt(ds)) : new Date(ds) : new Date();
+  if (date.toString() === "Invalid Date") {
+    res.json({"error" : "Invalid Date" });
   } else {
-    res.json(timeObj(new Date()));
+    res.json(timeObj(date));
   }
 });
 
 const timeObj = ( date ) => {
   return {
-    unix: date.getTime(),
+    unix: date.valueOf(),
     utc: date.toUTCString()
   };
 }
